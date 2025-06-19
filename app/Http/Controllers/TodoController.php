@@ -49,7 +49,32 @@ class TodoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // update todo item
+        $todo = Todo::findOrFail($id);
+
+        if($request->user()->id !== $todo->user_id){
+            return response()->json(['error'=> "Unauthorized"], 403);
+        }
+
+        $data = $request->validate([
+            'title'=> 'required|string',
+            'description' => 'nullable|string',
+            'is_completed' => 'boolean|nullable',
+            'due_date' => 'nullable|date'
+        ]);
+
+        $todo->update([
+            'title' => $data['title'],
+            'description' => $data['description'] ?? $todo->description,
+            'is_completed' => $data['is_completed'] ?? $todo->is_completed,
+            'due_date' => $data['due_date'] ?? $todo->due_date,
+        ]);
+
+        return response()->json([
+            'message' => 'Todo updated successfully', 
+            'data' => $todo
+        ], 200);
+        
     }
 
     /**
@@ -58,5 +83,7 @@ class TodoController extends Controller
     public function destroy(string $id)
     {
         //
+        $todo = Todo::findOrFail($id);
+        
     }
 }
