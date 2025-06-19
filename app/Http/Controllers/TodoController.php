@@ -49,13 +49,19 @@ class TodoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         //
         $todo = Todo::find($id);
+
         if(!$todo){
-            return response()->json(['error'=> 'Todo not found']);
+            return response()->json(['error'=> 'Todo not found'], 404);
         }
+
+        if($request->user()->id !== $todo->user_id){
+            return response()->json(['error'=> "Unauthorized"], 403);
+        }
+
 
         return response()->json(['Todo'=> $todo]);
     }
