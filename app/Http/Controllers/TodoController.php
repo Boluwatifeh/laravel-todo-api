@@ -42,6 +42,12 @@ class TodoController extends Controller
     public function show(string $id)
     {
         //
+        $todo = Todo::find($id);
+        if(!$todo){
+            return response()->json(['error'=> 'Todo not found']);
+        }
+
+        return response()->json(['Todo'=> $todo]);
     }
 
     /**
