@@ -19,7 +19,7 @@ class TodoController extends Controller
             return response()->json(['message'=> 'Unauthorized'], 401);
         }
 
-        $todos = $user->todos;
+        $todos = $user->todos()->orderBy('created_at', 'desc')->paginate(10);
 
         return response()->json($todos);
 
