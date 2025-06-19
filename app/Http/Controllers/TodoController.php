@@ -4,15 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Todo;
+use Illuminate\Support\Facades\Auth;
 
 class TodoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Todo::all();
+        $user = $request->user();
+
+        if(!$user){
+            return response()->json(['message'=> 'Unauthorized'], 401);
+        }
+
+        $todos = $user->todos;
+
+        return response()->json($todos);
+
     }
 
     /**
